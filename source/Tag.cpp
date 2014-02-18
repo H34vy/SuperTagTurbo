@@ -81,12 +81,12 @@ void Tag::initApp()
 	//objects[TOP_WALL]->setScale(15,1, -2*Z);
 	objects[BOTTOM_WALL]->setScale(15,1, -2*Z);
 	
-	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, &taggerBox);
-	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, &taggerBox);
+	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, &taggerBox, input);
+	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, &taggerBox, input);
 
 	objects[PLAYER1]->init(&playerBox, Vector3(-13, 0, Z), &mView, &mProj, sqrt(2));
 	objects[PLAYER2]->init(&playerBox, Vector3(13, 0, Z), &mView, &mProj, sqrt(2));
-
+	
 	if (rGen.next()) objects[PLAYER1]->tag();
 	else objects[PLAYER2]->tag();
 
@@ -169,18 +169,6 @@ void Tag::drawScene()
 
 
 //Don't touch these!
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
-{
-	// Enable run-time memory check for debug builds.
-#if defined(DEBUG) | defined(_DEBUG)
-	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-#endif
-
-	Tag theApp(hInstance);	
-	theApp.initApp();
-	return theApp.run();
-}
-
 void Tag::buildFX()
 {
 	DWORD shaderFlags = D3D10_SHADER_ENABLE_STRICTNESS;

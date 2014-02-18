@@ -7,9 +7,10 @@
 
 const Vector3 VELOCITY_MAX(2,15,0);
 
-Player::Player(int controlScheme, Box* t)
+Player::Player(int controlScheme, Box* t, Input* in)
 {
 	tagger = t;
+	input = in;
 
 	switch(controlScheme)
 	{
@@ -17,7 +18,7 @@ Player::Player(int controlScheme, Box* t)
 	case 1: UP = VK_UP; DOWN = VK_DOWN; LEFT = VK_LEFT; RIGHT = VK_RIGHT; break;
 	}
 
-	canJump = false;
+	onPlatform = false;
 	isTagger = false;	
 }
 
@@ -30,26 +31,24 @@ void Player::update(float dt)
 	if (velocity.x < 0) xChange += .025;
 	if (velocity.y > 0) yChange += -.025;		
 
-	//Change to "wasKeyPressed" may prevent double jump through platform.
-
 	//Jump
-	if ((GetAsyncKeyState(UP) & 0x8000) && canJump) yChange += 25;
+	if (input->isKeyDown(UP) && onPlatform) yChange += 25;
 
 	//Lateral movement
-	if (GetAsyncKeyState(LEFT) & 0x8000) xChange += -.05;	
-	if (GetAsyncKeyState(RIGHT) & 0x8000) xChange += .05;
+	if (input->isKeyDown(LEFT)) xChange += -.05;	
+	if (input->isKeyDown(RIGHT)) xChange += .05;
 
 	//Increase fall speed
-	if (GetAsyncKeyState(DOWN) & 0x8000) yChange += -.05;
-
+	if (input->isKeyDown(DOWN)) yChange += -.05;
+	
 	//Gravity
-	if (!canJump) yChange -= .03;
+	if (!onPlatform) yChange -= .04;
 
 	Vector3 accel = Vector3(xChange, yChange, 0); 	
 	Vector3 absVel(abs(velocity.x), abs(velocity.y), abs(velocity.z));
 	if (absVel < VELOCITY_MAX) velocity += accel;
 
-	canJump = false;
+	onPlatform = false;
 	
 	Object::update(dt);
 }
@@ -99,10 +98,9 @@ void Player::bounce()
 	{
 		position.y = oEdgeTop + scaleY + .0001;
 		velocity.y = 0;
-		canJump = true;
+		onPlatform = true;
 	}	
 }
-
 
 void Player::tag()
 {

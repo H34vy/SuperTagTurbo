@@ -10,11 +10,10 @@
 #ifndef D3DAPP_H
 #define D3DAPP_H
 
-
 #include "d3dUtil.h"
 #include "GameTimer.h"
 #include <string>
-
+#include "Input.h"
 
 class D3DApp
 {
@@ -50,6 +49,9 @@ protected:
 	bool      mMinimized;
 	bool      mMaximized;
 	bool      mResizing;
+
+	Input* input;
+	bool initialized;
 
 	GameTimer mTimer;
 

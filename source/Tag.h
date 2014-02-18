@@ -51,11 +51,12 @@ public:
 	void collisions();
 	void drawScene(); 
 	Vector3 moveCube();
+	LRESULT messageHandler( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
 private:
 	void buildFX();
 	void buildVertexLayouts();
-	
+
 	//Geometries
 	Line lineR, lineW, lineB;
 	Box platformBox, playerBox, taggerBox;
@@ -71,9 +72,7 @@ private:
 	ID3D10EffectMatrixVariable* mfxWVPVar;
 	
 	Matrix mView;
-	Matrix mProj;	
-	
-	Input* input;
+	Matrix mProj;
 };
 
 #endif
