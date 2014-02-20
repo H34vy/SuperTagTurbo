@@ -70,8 +70,7 @@ void Player::bounceCalc(Object* o)
 
 void Player::bounce()
 {
-
-	float error = .05;
+	float error = .06;
 	//Player hitting right side of Platform
 	if (abs(edgeLeft - oEdgeRight) < error)
 	{
