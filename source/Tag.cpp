@@ -34,6 +34,10 @@ void Tag::initApp()
 {
 	D3DApp::initApp();
 	
+	gameState = 0;
+
+	menu_Title = "Super Tag Turbo!";
+
 	platformBox.init(md3dDevice, 1.0f, BLACK);
 	playerBox.init(md3dDevice, 1.0f, DARKBROWN);
 	wallBox.init(md3dDevice, 1.0f);
@@ -56,11 +60,11 @@ void Tag::initApp()
 
 	const int Z = -1;
 
-	objects[BOT_LEFT_PLATFORM]->init(&platformBox, Vector3(-7, 2, Z), &mView, &mProj, sqrt(2));
-	objects[BOT_RIGHT_PLATFORM]->init(&platformBox, Vector3(7, 2, Z), &mView, &mProj, sqrt(2));
-	objects[TOP_LEFT_PLATFORM]->init(&platformBox, Vector3(-10, 12, Z), &mView, &mProj, sqrt(2));
-	objects[TOP_RIGHT_PLATFORM]->init(&platformBox, Vector3(10, 12, Z), &mView, &mProj, sqrt(2));
-	objects[MIDDLE_PLATFORM]->init(&platformBox, Vector3(0, 6.5, Z), &mView, &mProj, sqrt(2));
+	objects[BOT_LEFT_PLATFORM]->init(&platformBox, Vector3(-7, 2, Z), &mView, &mProj, .7071);
+	objects[BOT_RIGHT_PLATFORM]->init(&platformBox, Vector3(7, 2, Z), &mView, &mProj, .7071);
+	objects[TOP_LEFT_PLATFORM]->init(&platformBox, Vector3(-10, 12, Z), &mView, &mProj, .7071);
+	objects[TOP_RIGHT_PLATFORM]->init(&platformBox, Vector3(10, 12, Z), &mView, &mProj, .7071);
+	objects[MIDDLE_PLATFORM]->init(&platformBox, Vector3(0, 6.5, Z), &mView, &mProj, .7071);
 
 	objects[BOT_LEFT_PLATFORM]->setScale(4,.25,1);
 	objects[BOT_RIGHT_PLATFORM]->setScale(4,.25,1);
@@ -68,12 +72,12 @@ void Tag::initApp()
 	objects[TOP_RIGHT_PLATFORM]->setScale(2,.25,1);
 	objects[MIDDLE_PLATFORM]->setScale(3,.25,1);
 
-	objects[BACK_WALL]->init(&wallBox, Vector3(0,20,-Z), &mView, &mProj, sqrt(2));
-	objects[LEFT_WALL]->init(&wallBox, Vector3(-16,20,Z), &mView, &mProj, sqrt(2));
-	objects[RIGHT_WALL]->init(&wallBox, Vector3(16,20,Z), &mView, &mProj, sqrt(2));
+	objects[BACK_WALL]->init(&wallBox, Vector3(0,20,-Z), &mView, &mProj, .7071);
+	objects[LEFT_WALL]->init(&wallBox, Vector3(-16,20,Z), &mView, &mProj, .7071);
+	objects[RIGHT_WALL]->init(&wallBox, Vector3(16,20,Z), &mView, &mProj, .7071);
 
 	//objects[TOP_WALL]->init(&wallBox, Vector3(0,20,Z), &mView, &mProj, sqrt(2));
-	objects[BOTTOM_WALL]->init(&wallBox, Vector3(0,-4,Z), &mView, &mProj, sqrt(2));
+	objects[BOTTOM_WALL]->init(&wallBox, Vector3(0,-4,Z), &mView, &mProj, .7071);
 
 	objects[BACK_WALL]->setScale(16,25, 1);
 	objects[LEFT_WALL]->setScale(1,25, -2*Z);
@@ -84,8 +88,8 @@ void Tag::initApp()
 	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, &taggerBox, input);
 	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, &taggerBox, input);
 
-	objects[PLAYER1]->init(&playerBox, Vector3(-13, 0, Z), &mView, &mProj, sqrt(2));
-	objects[PLAYER2]->init(&playerBox, Vector3(13, 0, Z), &mView, &mProj, sqrt(2));
+	objects[PLAYER1]->init(&playerBox, Vector3(-13, 0, Z), &mView, &mProj, .7071);
+	objects[PLAYER2]->init(&playerBox, Vector3(13, 0, Z), &mView, &mProj, .7071);
 	
 	if (rGen.next()) objects[PLAYER1]->tag();
 	else objects[PLAYER2]->tag();
@@ -98,9 +102,17 @@ void Tag::initApp()
 
 void Tag::updateScene(float dt)
 {
-	D3DApp::updateScene(dt);
-	for (int i=0; i<OBJECT_COUNT; i++) objects[i]->update(dt);	
-	collisions();	
+	if(gameState == 0){
+		D3DApp::updateScene(dt);
+		if(input->isKeyDown(VK_RETURN)){
+			gameState = 1;
+		}
+	}
+	else if(gameState == 1){
+		D3DApp::updateScene(dt);
+		for (int i=0; i<OBJECT_COUNT; i++) objects[i]->update(dt);	
+		collisions();	
+	}
 
 	// Build the view matrix.
 	Vector3 pos(0.f,8.f,-37.0f);
@@ -156,8 +168,15 @@ void Tag::drawScene()
 	md3dDevice->OMSetBlendState(0, blendFactors, 0xffffffff);
     md3dDevice->IASetInputLayout(mVertexLayout);
 
-	//draw objects	
-	for (int i=0; i<OBJECT_COUNT; i++) objects[i]->draw(mTech, mfxWVPVar);		
+	if(gameState == 0){
+		RECT title = {0, 0, 200, 200};
+		mFont->DrawTextA(NULL, menu_Title.c_str(), 16, &title, DT_VCENTER, RED);
+	}
+	else if(gameState == 1){
+		//draw objects	
+		for (int i=0; i<OBJECT_COUNT; i++) objects[i]->draw(mTech, mfxWVPVar);
+	}
+
 
 	//draw font
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
@@ -219,5 +238,5 @@ void Tag::onResize()
 	D3DApp::onResize();
 
 	float aspect = (float)mClientWidth/mClientHeight;
-	D3DXMatrixPerspectiveFovLH(&mProj, 0.25f*PI, aspect, 1.0f, 1000.0f);
+	D3DXMatrixPerspectiveFovLH(&mProj, 0.25f*3.14159, aspect, 1.0f, 1000.0f);
 }

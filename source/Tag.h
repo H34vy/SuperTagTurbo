@@ -53,6 +53,9 @@ public:
 	Vector3 moveCube();
 	LRESULT messageHandler( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
+	int gameState;
+	std::string menu_Title;
+
 private:
 	void buildFX();
 	void buildVertexLayouts();
