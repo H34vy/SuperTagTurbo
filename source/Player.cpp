@@ -32,20 +32,22 @@ void Player::update(float dt)
 	if (velocity.y > 0) yChange += -.025;		
 
 	//Jump
-	if (input->isKeyDown(UP) && onPlatform) yChange += 25;
+	if (input->isKeyDown(UP) && onPlatform) yChange += 27;
 
 	//Lateral movement
 	if (input->isKeyDown(LEFT)) xChange += -.05;	
 	if (input->isKeyDown(RIGHT)) xChange += .05;
 
 	//Increase fall speed
-	if (input->isKeyDown(DOWN)) yChange += -.05;
+	if (input->isKeyDown(DOWN)) yChange += -.05;	
 	
-	//Gravity
-	if (!onPlatform) yChange -= .04;
+	if (!onPlatform){ 
+		yChange -= .04; //Gravity
+		xChange *=.5;	//Decreased midair movement
+	}
 
 	Vector3 accel = Vector3(xChange, yChange, 0); 	
-	Vector3 absVel(abs(velocity.x), abs(velocity.y), abs(velocity.z));
+	Vector3 absVel(abs(velocity.x), abs(velocity.y), 0);
 	if (absVel < VELOCITY_MAX) velocity += accel;
 
 	onPlatform = false;
@@ -70,7 +72,16 @@ void Player::bounceCalc(Object* o)
 
 void Player::bounce()
 {
-	float error = .06;
+	float error = .04;
+
+	//Player on platform
+	if (abs(edgeBot - oEdgeTop) < error)
+	{
+		position.y = oEdgeTop + scaleY + .0001;
+		velocity.y = 0;
+		onPlatform = true;
+		return;
+	}	
 	//Player hitting right side of Platform
 	if (abs(edgeLeft - oEdgeRight) < error)
 	{
@@ -92,13 +103,7 @@ void Player::bounce()
 		velocity.y *= -.25; velocity.y += .25*oVelY;
 	}
 
-	//Player on platform
-	if (abs(edgeBot - oEdgeTop) < error)
-	{
-		position.y = oEdgeTop + scaleY + .0001;
-		velocity.y = 0;
-		onPlatform = true;
-	}	
+
 }
 
 void Player::tag()
