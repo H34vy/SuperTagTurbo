@@ -37,6 +37,8 @@ void Tag::initApp()
 	gameState = 0;
 
 	menu_Title = "Super Tag Turbo!";
+	game_Seconds = 120;
+	game_Minutes = (game_Seconds/60);
 
 	platformBox.init(md3dDevice, 1.0f, BLACK);
 	playerBox.init(md3dDevice, 1.0f, DARKBROWN);
@@ -106,6 +108,7 @@ void Tag::updateScene(float dt)
 		D3DApp::updateScene(dt);
 		if(input->isKeyDown(VK_RETURN)){
 			gameState = 1;
+			mTimer.reset();
 		}
 	}
 	else if(gameState == 1){
@@ -168,13 +171,35 @@ void Tag::drawScene()
 	md3dDevice->OMSetBlendState(0, blendFactors, 0xffffffff);
     md3dDevice->IASetInputLayout(mVertexLayout);
 
+// Main Menu
 	if(gameState == 0){
 		RECT title = {0, 0, 200, 200};
 		mFont->DrawTextA(NULL, menu_Title.c_str(), 16, &title, DT_VCENTER, RED);
 	}
+
+// Game is underway
 	else if(gameState == 1){
 		//draw objects	
 		for (int i=0; i<OBJECT_COUNT; i++) objects[i]->draw(mTech, mfxWVPVar);
+		RECT title = {0, 0, 200, 100};
+		std::stringstream s;
+// Game Clock *WORK IN PROGRESS*
+		int seconds = game_Seconds - int(mTimer.getGameTime());
+		int minutes = seconds/60;
+		if(seconds%60 >= 10){
+			s << minutes << ":" << seconds%60;
+		}
+		else if(seconds%60 < 10 && seconds%60 >= 0){
+			s << minutes << ":" << "0" << seconds%60;
+		}
+		else if(seconds < 0){
+			seconds = 0;
+			minutes = 0;
+			s << minutes << ":" << seconds%60;
+		}
+
+		std::string ws = s.str();
+		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_VCENTER, BLACK);
 	}
 
 

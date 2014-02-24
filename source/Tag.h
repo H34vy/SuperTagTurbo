@@ -55,6 +55,9 @@ public:
 
 	int gameState;
 	std::string menu_Title;
+	std::string clock_Text;
+	int game_Minutes;
+	float game_Seconds;
 
 private:
 	void buildFX();
