@@ -39,6 +39,10 @@ void Tag::initApp()
 	menu_Title = "Super Tag Turbo!";
 	game_Seconds = 120;
 	game_Minutes = (game_Seconds/60);
+	player1_Score = 0;
+	player2_Score = 0;
+	last_frame_Time = 0;
+	current_frame_Time = 0;
 
 	platformBox.init(md3dDevice, 1.0f, BLACK);
 	playerBox.init(md3dDevice, 1.0f, DARKBROWN);
@@ -113,6 +117,7 @@ void Tag::initApp()
 
 void Tag::updateScene(float dt)
 {
+	current_frame_Time = mTimer.getGameTime();
 	if(gameState == 0){
 		D3DApp::updateScene(dt);
 		if(input->isKeyDown(VK_RETURN)){
@@ -124,6 +129,12 @@ void Tag::updateScene(float dt)
 		D3DApp::updateScene(dt);
 		for (int i=0; i<OBJECT_COUNT; i++) objects[i]->update(dt);	
 		collisions();	
+		if(objects[PLAYER1]->get_Tagger()){
+			player1_Score += current_frame_Time - last_frame_Time; 
+		}
+		else if(objects[PLAYER2]->get_Tagger()){
+			player2_Score += current_frame_Time - last_frame_Time;
+		}
 	}
 
 	// Build the view matrix.
@@ -191,7 +202,11 @@ void Tag::drawScene()
 		//draw objects	
 		for (int i=0; i<OBJECT_COUNT; i++) objects[i]->draw(mTech, mfxWVPVar);
 		RECT title = {0, 0, 200, 100};
+		RECT p1_score_Rect = {50, 475, 100, 525};
+		RECT p2_score_Rect = {700, 475, 750, 525};
 		std::stringstream s;
+		std::stringstream p1;
+		std::stringstream p2;
 // Game Clock *WORK IN PROGRESS*
 		int seconds = game_Seconds - int(mTimer.getGameTime());
 		int minutes = seconds/60;
@@ -206,12 +221,17 @@ void Tag::drawScene()
 			minutes = 0;
 			s << minutes << ":" << seconds%60;
 		}
-
+		p1 << floor(player1_Score);
+		p2 << floor(player2_Score);
 		std::string ws = s.str();
+		std::string wp1 = p1.str();
+		std::string wp2 = p2.str();
 		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_VCENTER, BLACK);
+		mFont->DrawTextA(NULL, wp1.c_str(), -1, &p1_score_Rect, DT_VCENTER, BLACK);
+		mFont->DrawTextA(NULL, wp2.c_str(), -1, &p2_score_Rect, DT_VCENTER, BLACK);
 	}
 
-
+	last_frame_Time = mTimer.getGameTime();
 	//draw font
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
 	//RECT R = {5, 5, 0, 0};

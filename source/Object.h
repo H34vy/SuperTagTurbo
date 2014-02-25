@@ -48,6 +48,7 @@ public:
 	virtual void bounce(Object* o){};
 	virtual void bounce(){};	
 	virtual void tag(){};
+	virtual bool get_Tagger(){return true;};
 	
 	//Other	
 	void init(Geometry *g, Vector3 _pos, Matrix* view, Matrix* Projection, float _radius);	

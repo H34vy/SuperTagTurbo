@@ -21,6 +21,7 @@ public:
 	virtual void bounceCalc(Object* o);
 	virtual void bounce();
 	virtual void bounce(Object* o)			{bounceCalc(o); bounce();}
+	virtual bool get_Tagger(){return isTagger;}
 	
 protected:
 	Input* input;

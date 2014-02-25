@@ -62,6 +62,10 @@ public:
 	std::string clock_Text;
 	int game_Minutes;
 	float game_Seconds;
+	float player1_Score;
+	float player2_Score;
+	float last_frame_Time;
+	float current_frame_Time;
 
 private:
 	void buildFX();
