@@ -12,7 +12,6 @@
 #include "Input.h"
 #include "Object.h"
 #include "Player.h"
-#include "Indicator.h"
 
 //Object indicies 
 enum
@@ -29,9 +28,6 @@ enum
 
 	PLAYER1,
 	PLAYER2,	
-
-	INDICATOR_PLAYER1,
-	INDICATOR_PLAYER2,
 
 	BACK_WALL,
 	LEFT_WALL,
@@ -73,9 +69,12 @@ private:
 	Line lineR, lineW, lineB;
 	Box platformBox, playerBox, taggerBox;
 	RainbowBox wallBox;
+<<<<<<< HEAD
 	Pyramid indicatorPlayer1, indicatorPlayer2;
 	std::stringstream s;
 	
+=======
+>>>>>>> parent of 89a25e6... 	modified:   Geometry.cpp
 
 	//Array of objects	
 	Object* objects[OBJECT_COUNT];	

@@ -49,9 +49,6 @@ void Tag::initApp()
 	lineW.init(md3dDevice, 10.0f, GREEN);
 	lineB.init(md3dDevice, 10.0f, BLUE);
 
-	indicatorPlayer1.init(md3dDevice, 0.5f, RED);
-	indicatorPlayer2.init(md3dDevice, 0.5f, BLUE);
-
 	for (int i=0; i<OBJECT_COUNT; i++) objects[i] = new Object();
 
 	/*objects[X_AXIS]->init(&lineR, Vector3(-10,0,0), &mView, &mProj, 5);
@@ -93,15 +90,9 @@ void Tag::initApp()
 	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, &taggerBox, input);
 	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, &taggerBox, input);
 
-	objects[PLAYER1]->init(&playerBox, Vector3(-13,0,Z), &mView, &mProj, .7071);
-	objects[PLAYER2]->init(&playerBox, Vector3(13,0, Z), &mView, &mProj, .7071);
+	objects[PLAYER1]->init(&playerBox, Vector3(-13, 0, Z), &mView, &mProj, .7071);
+	objects[PLAYER2]->init(&playerBox, Vector3(13, 0, Z), &mView, &mProj, .7071);
 	
-	delete objects[INDICATOR_PLAYER1]; objects[INDICATOR_PLAYER1] = new Indicator(0, &indicatorPlayer1, input, objects[PLAYER1]);
-	delete objects[INDICATOR_PLAYER2]; objects[INDICATOR_PLAYER2] = new Indicator(0, &indicatorPlayer2, input, objects[PLAYER2]);
-
-	objects[INDICATOR_PLAYER1]->init(&indicatorPlayer1, Vector3(-13,3,Z), &mView, &mProj, .7071);
-	objects[INDICATOR_PLAYER2]->init(&indicatorPlayer2, Vector3(13,3,Z), &mView, &mProj, .7071);
-
 	if (rGen.next()) objects[PLAYER1]->tag();
 	else objects[PLAYER2]->tag();
 
@@ -182,7 +173,7 @@ void Tag::drawScene()
 
 // Main Menu
 	if(gameState == 0){
-		RECT title = {0, 0, mClientWidth, mClientHeight};
+		RECT title = {0, 0, 200, 200};
 		mFont->DrawTextA(NULL, menu_Title.c_str(), 16, &title, DT_VCENTER, RED);
 	}
 
@@ -221,7 +212,7 @@ void Tag::buildFX()
  
 	ID3D10Blob* compilationErrors = 0;
 	HRESULT hr = 0;
-	hr = D3DX10CreateEffectFromFile(L"SuperTagTurbo//source//color.fx", 0, 0, 
+	hr = D3DX10CreateEffectFromFile(L"source//color.fx", 0, 0, 
 		"fx_4_0", shaderFlags, 0, md3dDevice, 0, 0, &mFX, &compilationErrors, 0);
 	if(FAILED(hr))
 	{

@@ -48,10 +48,4 @@ public:
 	virtual void draw();
 };
 
-class Pyramid: public Geometry {
-public:
-	virtual void init(Device* d, float scale, Color c = BLACK);
-	virtual void draw();
-};
-
 #endif
