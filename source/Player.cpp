@@ -112,13 +112,15 @@ void Player::bounce()
 		velocity.y *= -.25; velocity.y += .25*oVelY;
 	}
 
-	//Special bottom platform check
+	//Special wall checks
 	if (edgeBot < -3.f)
 	{
 		position.y = -3.f + scaleY;
 		velocity.y = 0;
 	}
-	
+
+	if (edgeLeft < -15.f) position.x = -15.f + scaleX;
+	if (edgeRight > 15.f) position.x = 15.f - scaleX;	
 }
 
 void Player::tag()

@@ -252,7 +252,7 @@ void Tag::buildFX()
  
 	ID3D10Blob* compilationErrors = 0;
 	HRESULT hr = 0;
-	hr = D3DX10CreateEffectFromFile(L"SuperTagTurbo//source//color.fx", 0, 0, 
+	hr = D3DX10CreateEffectFromFile(L"source//color.fx", 0, 0, 
 		"fx_4_0", shaderFlags, 0, md3dDevice, 0, 0, &mFX, &compilationErrors, 0);
 	if(FAILED(hr))
 	{
