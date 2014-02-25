@@ -191,21 +191,10 @@ void Tag::drawScene()
 		//draw objects	
 		for (int i=0; i<OBJECT_COUNT; i++) objects[i]->draw(mTech, mfxWVPVar);
 		RECT title = {0, 0, 200, 100};
-		std::stringstream s;
 // Game Clock *WORK IN PROGRESS*
 		int seconds = game_Seconds - int(mTimer.getGameTime());
 		int minutes = seconds/60;
-		if(seconds%60 >= 10){
-			s << minutes << ":" << seconds%60;
-		}
-		else if(seconds%60 < 10 && seconds%60 >= 0){
-			s << minutes << ":" << "0" << seconds%60;
-		}
-		else if(seconds < 0){
-			seconds = 0;
-			minutes = 0;
-			s << minutes << ":" << seconds%60;
-		}
+		match_Clock(minutes, seconds);
 
 		std::string ws = s.str();
 		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_VCENTER, BLACK);
@@ -273,4 +262,18 @@ void Tag::onResize()
 
 	float aspect = (float)mClientWidth/mClientHeight;
 	D3DXMatrixPerspectiveFovLH(&mProj, 0.25f*3.14159, aspect, 1.0f, 1000.0f);
+}
+
+void Tag::match_Clock(int& minutes, int& seconds){
+	if(seconds%60 >= 10){
+		s << minutes << ":" << seconds%60;
+	}
+	else if(seconds%60 < 10 && seconds%60 >= 0){
+		s << minutes << ":" << "0" << seconds%60;
+	}
+	else if(seconds < 0){
+		seconds = 0;
+		minutes = 0;
+		s << minutes << ":" << seconds%60;
+	}
 }

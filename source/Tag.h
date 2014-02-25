@@ -56,6 +56,7 @@ public:
 	void drawScene(); 
 	Vector3 moveCube();
 	LRESULT messageHandler( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+	void match_Clock(int& minutes, int& seconds);
 
 	int gameState;
 	std::string menu_Title;
@@ -72,6 +73,8 @@ private:
 	Box platformBox, playerBox, taggerBox;
 	RainbowBox wallBox;
 	Pyramid indicatorPlayer1, indicatorPlayer2;
+	std::stringstream s;
+	
 
 	//Array of objects	
 	Object* objects[OBJECT_COUNT];	
