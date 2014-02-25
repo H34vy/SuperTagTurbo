@@ -12,6 +12,7 @@
 #include "Input.h"
 #include "Object.h"
 #include "Player.h"
+#include "Indicator.h"
 
 //Object indicies 
 enum
@@ -28,6 +29,9 @@ enum
 
 	PLAYER1,
 	PLAYER2,	
+
+	INDICATOR_PLAYER1,
+	INDICATOR_PLAYER2,
 
 	BACK_WALL,
 	LEFT_WALL,
@@ -52,14 +56,12 @@ public:
 	void drawScene(); 
 	Vector3 moveCube();
 	LRESULT messageHandler( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
-	void match_Clock(int& minutes, int& seconds);
 
 	int gameState;
 	std::string menu_Title;
 	std::string clock_Text;
 	int game_Minutes;
 	float game_Seconds;
-	std::string butts;
 
 private:
 	void buildFX();
@@ -69,12 +71,7 @@ private:
 	Line lineR, lineW, lineB;
 	Box platformBox, playerBox, taggerBox;
 	RainbowBox wallBox;
-<<<<<<< HEAD
 	Pyramid indicatorPlayer1, indicatorPlayer2;
-	std::stringstream s;
-	
-=======
->>>>>>> parent of 89a25e6... 	modified:   Geometry.cpp
 
 	//Array of objects	
 	Object* objects[OBJECT_COUNT];	
