@@ -47,7 +47,7 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 	mDepthStencilView   = 0;
 	mFont               = 0;
 
-	mMainWndCaption = L"D3D10 Application";
+	mMainWndCaption = L"Super Tag Turbo!";
 	md3dDriverType  = D3D10_DRIVER_TYPE_HARDWARE;
 	mClearColor     = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
 	mClientWidth    = 800;
@@ -417,12 +417,12 @@ void D3DApp::initMainWindow()
 
 	// Compute window rectangle dimensions based on requested client area dimensions.
 	RECT R = { 0, 0, mClientWidth, mClientHeight };
-    AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
+    AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX, false);
 	int width  = R.right - R.left;
 	int height = R.bottom - R.top;
 
 	mhMainWnd = CreateWindow(L"D3DWndClassName", mMainWndCaption.c_str(), 
-		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mhAppInst, this); 
+		WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mhAppInst, this); 
 	if( !mhMainWnd )
 	{
 		MessageBox(0, L"CreateWindow FAILED", 0, 0);

@@ -175,8 +175,7 @@ void Tag::collisions()
 		objects[PLAYER2]->bounce();
 		objects[PLAYER1]->tag();
 		objects[PLAYER2]->tag();
-	}	
-	
+	}		
 }
 
 void Tag::drawScene()
@@ -247,12 +246,12 @@ void Tag::buildFX()
 	DWORD shaderFlags = D3D10_SHADER_ENABLE_STRICTNESS;
 #if defined( DEBUG ) || defined( _DEBUG )
     shaderFlags |= D3D10_SHADER_DEBUG;
-	shaderFlags |= D3D10_SHADER_SKIP_OPTIMIZATION;
+	//shaderFlags |= D3D10_SHADER_SKIP_OPTIMIZATION;
 #endif
  
 	ID3D10Blob* compilationErrors = 0;
 	HRESULT hr = 0;
-	hr = D3DX10CreateEffectFromFile(L"SuperTagTurbo//source//color.fx", 0, 0, 
+	hr = D3DX10CreateEffectFromFile(L"source//color.fx", 0, 0, 
 		"fx_4_0", shaderFlags, 0, md3dDevice, 0, 0, &mFX, &compilationErrors, 0);
 	if(FAILED(hr))
 	{
