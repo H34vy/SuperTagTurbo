@@ -63,6 +63,7 @@ public:
 	std::string clock_Text;
 	int game_Minutes;
 	float game_Seconds;
+	std::string butts;
 
 private:
 	void buildFX();
