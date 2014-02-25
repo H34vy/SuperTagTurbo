@@ -27,7 +27,7 @@
 #define Technique	ID3D10EffectTechnique
 #define MatrixVar	ID3D10EffectMatrixVariable
 
-#define ZERO		Vector3(0,0,0);
+#define ZERO		Vector3(0,0,0)
 #define PI			3.14159;
 
 #endif

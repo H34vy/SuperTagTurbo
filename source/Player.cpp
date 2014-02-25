@@ -27,12 +27,7 @@ Player::Player(int controlScheme, Box* t, Input* in)
 
 void Player::update(float dt)
 {	
-	float xChange = 0, yChange = 0;
-
-	//Decrease magnitude of velocity - friction, air resistance, etc.
-	if (velocity.x > 0) xChange += -30;
-	if (velocity.x < 0) xChange += 30;
-	if (velocity.y > 0) yChange += -15;		
+	float xChange = 0, yChange = 0;	
 
 	//Jump
 	if (input->isKeyDown(UP) && onPlatform) jumpLeft = 2;
@@ -44,8 +39,18 @@ void Player::update(float dt)
 	//Increase fall speed
 	//if (input->isKeyDown(DOWN)) yChange += -15;	
 	
+	//Decreased midair movement
 	if (!onPlatform){
-		xChange *=.5;	//Decreased midair movement
+		if (velocity.x > 0) xChange += -15;
+		if (velocity.x < 0) xChange += 15;
+		xChange *=.5;	
+	}
+	else
+	{
+		//Friction/air resistance
+		if (velocity.x > 0) xChange += -30;
+		if (velocity.x < 0) xChange += 30;
+		if (velocity.y > 0) yChange += -15;	
 	}
 
 	if (jumpLeft > 0)

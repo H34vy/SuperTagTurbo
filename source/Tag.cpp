@@ -36,7 +36,7 @@ void Tag::initApp()
 	
 	gameState = 0;
 
-	menu_Title = "Super Tag Turbo!";
+	menu_Title = "Super Tag Turbo!\nPress any key to begin";
 	game_Seconds = 120;
 	game_Minutes = (game_Seconds/60);
 	player1_Score = 0;
@@ -47,11 +47,7 @@ void Tag::initApp()
 	platformBox.init(md3dDevice, 1.0f, BLACK);
 	playerBox.init(md3dDevice, 1.0f, DARKBROWN);
 	wallBox.init(md3dDevice, 1.0f);
-	taggerBox.init(md3dDevice, 1.0f, RED);
-
-	lineR.init(md3dDevice, 10.0f, RED);	
-	lineW.init(md3dDevice, 10.0f, GREEN);
-	lineB.init(md3dDevice, 10.0f, BLUE);
+	taggerBox.init(md3dDevice, 1.0f, WHITE);
 
 	indicatorPlayer1.init(md3dDevice, 0.5f, RED);
 	indicatorPlayer2.init(md3dDevice, 0.5f, BLUE);
@@ -69,30 +65,29 @@ void Tag::initApp()
 
 	const int Z = -1;
 
+	objects[BOT_LEFT_PLATFORM]->setScale(4,.25,1);
+	objects[BOT_RIGHT_PLATFORM]->setScale(4,.25,1);
+	objects[TOP_LEFT_PLATFORM]->setScale(2,.25,1);
+	objects[TOP_RIGHT_PLATFORM]->setScale(2,.25,1);
+	objects[MIDDLE_PLATFORM]->setScale(3,.25,1);
+	
 	objects[BOT_LEFT_PLATFORM]->init(&platformBox, Vector3(-7, 2, Z), &mView, &mProj, .7071);
 	objects[BOT_RIGHT_PLATFORM]->init(&platformBox, Vector3(7, 2, Z), &mView, &mProj, .7071);
 	objects[TOP_LEFT_PLATFORM]->init(&platformBox, Vector3(-10, 12, Z), &mView, &mProj, .7071);
 	objects[TOP_RIGHT_PLATFORM]->init(&platformBox, Vector3(10, 12, Z), &mView, &mProj, .7071);
 	objects[MIDDLE_PLATFORM]->init(&platformBox, Vector3(0, 6.5, Z), &mView, &mProj, .7071);
 
-	objects[BOT_LEFT_PLATFORM]->setScale(4,.25,1);
-	objects[BOT_RIGHT_PLATFORM]->setScale(4,.25,1);
-	objects[TOP_LEFT_PLATFORM]->setScale(2,.25,1);
-	objects[TOP_RIGHT_PLATFORM]->setScale(2,.25,1);
-	objects[MIDDLE_PLATFORM]->setScale(3,.25,1);
-
-	objects[BACK_WALL]->init(&wallBox, Vector3(0,20,-Z), &mView, &mProj, .7071);
-	objects[LEFT_WALL]->init(&wallBox, Vector3(-16,20,Z), &mView, &mProj, .7071);
-	objects[RIGHT_WALL]->init(&wallBox, Vector3(16,20,Z), &mView, &mProj, .7071);
-
-	//objects[TOP_WALL]->init(&wallBox, Vector3(0,20,Z), &mView, &mProj, sqrt(2));
-	objects[BOTTOM_WALL]->init(&wallBox, Vector3(0,-4,Z), &mView, &mProj, .7071);
 
 	objects[BACK_WALL]->setScale(16,25, 1);
 	objects[LEFT_WALL]->setScale(1,25, -2*Z);
 	objects[RIGHT_WALL]->setScale(1,25, -2*Z);	
-	//objects[TOP_WALL]->setScale(15,1, -2*Z);
+	
+	objects[BACK_WALL]->init(&wallBox, Vector3(0,20,-Z), &mView, &mProj, .7071);
+	objects[LEFT_WALL]->init(&wallBox, Vector3(-16,20,Z), &mView, &mProj, .7071);
+	objects[RIGHT_WALL]->init(&wallBox, Vector3(16,20,Z), &mView, &mProj, .7071);
+	
 	objects[BOTTOM_WALL]->setScale(15,1, -2*Z);
+	objects[BOTTOM_WALL]->init(&wallBox, Vector3(0,-4,Z), &mView, &mProj, .7071);
 	
 	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, &taggerBox, input);
 	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, &taggerBox, input);
@@ -120,7 +115,7 @@ void Tag::updateScene(float dt)
 	current_frame_Time = mTimer.getGameTime();
 	if(gameState == 0){
 		D3DApp::updateScene(dt);
-		if(input->isKeyDown(VK_RETURN)){
+		if(input->anyKeyPressed()){
 			gameState = 1;
 			mTimer.reset();
 		}
@@ -145,17 +140,7 @@ void Tag::updateScene(float dt)
 }
 
 void Tag::collisions()
-{
-
-	//Wholistic appropach
-	/*for (int i=0; i<OBJECT_COUNT; i++)	
-		for (int j=i+1; j<OBJECT_COUNT; j++)		
-			if (objects[i]->rectCollided(objects[j]))
-			{
-				objects[i]->resetPosition();
-				objects[j]->resetPosition();
-			}*/
-	
+{	
 	//More efficient approach for Tag
 	for (int i=0; i<OBJECT_COUNT; i++)	
 		if (i != PLAYER1 && i != PLAYER2 )
@@ -191,23 +176,18 @@ void Tag::drawScene()
 	md3dDevice->OMSetBlendState(0, blendFactors, 0xffffffff);
     md3dDevice->IASetInputLayout(mVertexLayout);
 
-// Main Menu
-	if(gameState == 0){
-		RECT title = {0, 0, mClientWidth, mClientHeight};
-		mFont->DrawTextA(NULL, menu_Title.c_str(), 16, &title, DT_VCENTER, RED);
-	}
+	//draw objects	
+	for (int i=0; i<OBJECT_COUNT; i++) objects[i]->draw(mTech, mfxWVPVar);
 
 // Game is underway
-	else if(gameState == 1){
-		//draw objects	
-		for (int i=0; i<OBJECT_COUNT; i++) objects[i]->draw(mTech, mfxWVPVar);
-		RECT title = {0, 0, 200, 100};
-		RECT p1_score_Rect = {50, 475, 100, 525};
-		RECT p2_score_Rect = {700, 475, 750, 525};
+	if(gameState == 1){			
+		RECT title = {0, 0, mClientWidth, 500};
+		RECT p1_score_Rect = {25, 475, 100, 525};
+		RECT p2_score_Rect = {675, 475, 800, 525};
 		std::stringstream s;
 		std::stringstream p1;
 		std::stringstream p2;
-// Game Clock *WORK IN PROGRESS*
+		// Game Clock *WORK IN PROGRESS*
 		int seconds = game_Seconds - int(mTimer.getGameTime());
 		int minutes = seconds/60;
 		if(seconds%60 >= 10){
@@ -221,22 +201,24 @@ void Tag::drawScene()
 			minutes = 0;
 			s << minutes << ":" << seconds%60;
 		}
-		p1 << floor(player1_Score);
-		p2 << floor(player2_Score);
+		p1 << "P1\n" << floor(player1_Score);
+		p2 << "P2\n" << floor(player2_Score);
 		std::string ws = s.str();
 		std::string wp1 = p1.str();
-		std::string wp2 = p2.str();
-		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_VCENTER, BLACK);
-		mFont->DrawTextA(NULL, wp1.c_str(), -1, &p1_score_Rect, DT_VCENTER, BLACK);
-		mFont->DrawTextA(NULL, wp2.c_str(), -1, &p2_score_Rect, DT_VCENTER, BLACK);
+		std::string wp2 = p2.str();	
+		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_CENTER, BLACK);
+		mFont->DrawTextA(NULL, wp1.c_str(), -1, &p1_score_Rect, DT_CENTER, RED);
+		mFont->DrawTextA(NULL, wp2.c_str(), -1, &p2_score_Rect, DT_CENTER, BLUE);
 	}
 
 	last_frame_Time = mTimer.getGameTime();
-	//draw font
-	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
-	//RECT R = {5, 5, 0, 0};
-	//mFont->DrawText(0, mFrameStats.c_str(), -1, &R, DT_NOCLIP, BLACK);
-	
+
+	// Main Menu
+	if(gameState == 0){
+		RECT title = {mClientWidth/2, mClientHeight/2, mClientWidth, mClientHeight};
+		mFont->DrawTextA(NULL, menu_Title.c_str(), 16, &title, DT_NOCLIP & DT_CENTER & DT_VCENTER, RED);
+	}	
+
 	mSwapChain->Present(0, 0);
 }
 

@@ -132,14 +132,14 @@ void D3DApp::initApp()
 	D3DX10_FONT_DESC fontDesc;
 	fontDesc.Height          = 24;
     fontDesc.Width           = 0;
-    fontDesc.Weight          = 0;
+    fontDesc.Weight          = BOLD_FONTTYPE;
     fontDesc.MipLevels       = 1;
     fontDesc.Italic          = false;
     fontDesc.CharSet         = DEFAULT_CHARSET;
     fontDesc.OutputPrecision = OUT_DEFAULT_PRECIS;
     fontDesc.Quality         = DEFAULT_QUALITY;
     fontDesc.PitchAndFamily  = DEFAULT_PITCH | FF_DONTCARE;
-    wcscpy(fontDesc.FaceName, L"Times New Roman");
+    wcscpy(fontDesc.FaceName, L"Batang");
 
 	D3DX10CreateFontIndirect(md3dDevice, &fontDesc, &mFont);
 }

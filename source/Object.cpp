@@ -11,6 +11,7 @@ Object::Object()
 	speed = 0;
 	active = true;
 	Identity(&world);
+	setScale(0.f,0.f,0.f);
 }
 
 Object::~Object()
@@ -44,8 +45,9 @@ void Object::init(Geometry *g, Vector3 pos, Matrix* view, Matrix* Projection, fl
 	radius = _radius * 1.01;		
 	radiusSquared = radius * radius;	
 	velocity = Vector3(0,0,0);
-	rotX = rotY = rotZ = 0;	
-	scaleX = scaleY = scaleZ = 1;
+	if (getScale() == ZERO) setScale(1.f,1.f,1.f);
+	rotX = rotY = rotZ = 0;		
+	update(0.f);
 }
 
 void Object::update(float dt)
