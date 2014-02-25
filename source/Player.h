@@ -35,6 +35,8 @@ protected:
 	float edgeTop, edgeBot, edgeLeft, edgeRight;
 	float oEdgeTop, oEdgeBot, oEdgeLeft, oEdgeRight, oVelX, oVelY;
 
+	float jumpLeft;
+
 	
 };
 

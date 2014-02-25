@@ -5,7 +5,8 @@
 
 #include "Player.h"
 
-const Vector3 VELOCITY_MAX(2,15,0);
+const float JUMP_SPEED(26.f);
+const float GRAVITY(75.f);
 
 Player::Player(int controlScheme, Box* t, Input* in)
 {
@@ -20,6 +21,8 @@ Player::Player(int controlScheme, Box* t, Input* in)
 
 	onPlatform = false;
 	isTagger = false;	
+
+	jumpLeft = 0;
 }
 
 void Player::update(float dt)
@@ -27,28 +30,32 @@ void Player::update(float dt)
 	float xChange = 0, yChange = 0;
 
 	//Decrease magnitude of velocity - friction, air resistance, etc.
-	if (velocity.x > 0) xChange += -.025;
-	if (velocity.x < 0) xChange += .025;
-	if (velocity.y > 0) yChange += -.025;		
+	if (velocity.x > 0) xChange += -30;
+	if (velocity.x < 0) xChange += 30;
+	if (velocity.y > 0) yChange += -15;		
 
 	//Jump
-	if (input->isKeyDown(UP) && onPlatform) yChange += 27;
+	if (input->isKeyDown(UP) && onPlatform) jumpLeft = 2;
 
 	//Lateral movement
-	if (input->isKeyDown(LEFT)) xChange += -.05;	
-	if (input->isKeyDown(RIGHT)) xChange += .05;
+	if (input->isKeyDown(LEFT)) xChange += -75;	
+	if (input->isKeyDown(RIGHT)) xChange += 75;
 
 	//Increase fall speed
-	if (input->isKeyDown(DOWN)) yChange += -.05;	
+	//if (input->isKeyDown(DOWN)) yChange += -15;	
 	
-	if (!onPlatform){ 
-		yChange -= .04; //Gravity
+	if (!onPlatform){
 		xChange *=.5;	//Decreased midair movement
 	}
 
-	Vector3 accel = Vector3(xChange, yChange, 0); 	
-	Vector3 absVel(abs(velocity.x), abs(velocity.y), 0);
-	if (absVel < VELOCITY_MAX) velocity += accel;
+	if (jumpLeft > 0)
+	{
+		velocity.y = JUMP_SPEED;
+		jumpLeft -= velocity.y*dt;
+	}
+
+	velocity.y -= GRAVITY*dt;
+	velocity.x += xChange*dt;
 
 	onPlatform = false;
 	
@@ -72,38 +79,46 @@ void Player::bounceCalc(Object* o)
 
 void Player::bounce()
 {
-	float error = .04;
+	float error = .06;
 
-	//Player on platform
+	//Player on Object
 	if (abs(edgeBot - oEdgeTop) < error)
 	{
-		position.y = oEdgeTop + scaleY + .0001;
+		position.y = oEdgeTop + scaleY;
 		velocity.y = 0;
 		onPlatform = true;
+		jumpLeft = -1;
 		return;
 	}	
-	//Player hitting right side of Platform
+
+	//Player hitting right side of Object
 	if (abs(edgeLeft - oEdgeRight) < error)
 	{
-		position.x = oEdgeRight + scaleX + .0001;
+		position.x = oEdgeRight + scaleX + .001;
 		velocity.x *= -.25; velocity.x += .5*oVelX;
 	}
 
-	//Player hitting left side of Platform
+	//Player hitting left side of Object
 	if (abs(edgeRight - oEdgeLeft) < error)
 	{
-		position.x = oEdgeLeft - scaleX - .0001;
+		position.x = oEdgeLeft - scaleX - .001;
 		velocity.x *= -.25; velocity.x += .5*oVelX;
 	}	
 
-	//Player below platform
+	//Player below Object
 	if (abs(edgeTop - oEdgeBot) < error)
 	{
-		position.y = oEdgeBot - scaleY - .0001;
+		position.y = oEdgeBot - scaleY;
 		velocity.y *= -.25; velocity.y += .25*oVelY;
 	}
 
-
+	//Special bottom platform check
+	if (edgeBot < -3.f)
+	{
+		position.y = -3.f + scaleY;
+		velocity.y = 0;
+	}
+	
 }
 
 void Player::tag()
