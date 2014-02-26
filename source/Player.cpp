@@ -86,7 +86,7 @@ void Player::bounceCalc(Object* o)
 
 void Player::bounce()
 {
-	float error = .06;
+	float error = .6;
 
 	//Player on Object
 	if (abs(edgeBot - oEdgeTop) < error)

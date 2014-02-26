@@ -36,8 +36,8 @@ void Tag::initApp()
 	
 	gameState = 0;
 
-	menu_Title = "Super Tag Turbo!\nPress any key to begin";
-	game_Seconds = 120;
+	menu_Title = "SuperTagTurbo!\nWhite is \"It!\"\nPress any key to begin";
+	game_Seconds = 60;
 	game_Minutes = (game_Seconds/60);
 	player1_Score = 0;
 	player2_Score = 0;
@@ -196,11 +196,17 @@ void Tag::drawScene()
 	//draw objects	
 	for (int i=0; i<OBJECT_COUNT; i++) objects[i]->draw(mTech, mfxWVPVar);
 
-// Game is underway
+	//Intro
+	if(gameState == 0){
+		RECT title = {0, 100, mClientWidth, mClientHeight};
+		mFont->DrawTextA(NULL, menu_Title.c_str(), menu_Title.size(), &title, DT_CENTER, RED);
+	}
+
+	// Game is underway
 	if(gameState == 1){			
-		RECT title = {0, 0, mClientWidth, 500};
-		RECT p1_score_Rect = {25, 475, 100, 525};
-		RECT p2_score_Rect = {675, 475, 800, 525};
+		RECT title = {0, 25, mClientWidth, 500};
+		RECT p1_score_Rect = {25, 475, 100, 600};
+		RECT p2_score_Rect = {675, 475, 800, 600};
 		std::stringstream s;
 		std::stringstream p1;
 		std::stringstream p2;
@@ -218,6 +224,8 @@ void Tag::drawScene()
 			minutes = 0;
 			s << minutes << ":" << seconds%60;
 		}
+		if(objects[PLAYER1]->get_Tagger()){ p1 << "\"It\"\n"; p2 << '\n';}
+		else{ p2 << "\"It\"\n"; p1 << '\n'; }
 		p1 << "P1\n" << floor(player1_Score);
 		p2 << "P2\n" << floor(player2_Score);
 		std::string ws = s.str();
@@ -229,12 +237,7 @@ void Tag::drawScene()
 	}
 
 	last_frame_Time = mTimer.getGameTime();
-
-	// Main Menu
-	if(gameState == 0){
-		RECT title = {mClientWidth/2, mClientHeight/2, mClientWidth, mClientHeight};
-		mFont->DrawTextA(NULL, menu_Title.c_str(), 16, &title, DT_NOCLIP & DT_CENTER & DT_VCENTER, RED);
-	}	
+	
 
 	mSwapChain->Present(0, 0);
 }
