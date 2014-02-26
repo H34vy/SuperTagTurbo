@@ -44,6 +44,20 @@ void Tag::initApp()
 	last_frame_Time = 0;
 	current_frame_Time = 0;
 
+	audio = new Audio();
+	if (*WAVE_BANK != '\0' && *SOUND_BANK != '\0')  // if sound files defined
+    {
+        if( FAILED( hr = audio->initialize() ) )
+        {
+            if( hr == HRESULT_FROM_WIN32( ERROR_FILE_NOT_FOUND ) )
+                throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system because media file not found."));
+            else
+                throw(GameError(gameErrorNS::FATAL_ERROR, "Failed to initialize sound system."));
+        }
+    }
+	audio->run();
+
+
 	platformBox.init(md3dDevice, 1.0f, BLACK);
 	playerBox.init(md3dDevice, 1.0f, DARKBROWN);
 	wallBox.init(md3dDevice, 1.0f);
@@ -89,8 +103,8 @@ void Tag::initApp()
 	objects[BOTTOM_WALL]->setScale(15,1, -2*Z);
 	objects[BOTTOM_WALL]->init(&wallBox, Vector3(0,-4,Z), &mView, &mProj, .7071);
 	
-	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, &taggerBox, input);
-	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, &taggerBox, input);
+	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, &taggerBox, input, audio);
+	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, &taggerBox, input, audio);
 
 	objects[PLAYER1]->init(&playerBox, Vector3(-13,0,Z), &mView, &mProj, .7071);
 	objects[PLAYER2]->init(&playerBox, Vector3(13,0, Z), &mView, &mProj, .7071);
@@ -108,6 +122,8 @@ void Tag::initApp()
 
 	buildFX();
 	buildVertexLayouts();
+	
+	audio->playCue(BG);
 }
 
 void Tag::updateScene(float dt)
@@ -149,7 +165,7 @@ void Tag::collisions()
 				objects[PLAYER1]->bounce(objects[i]);
 
 			if (objects[PLAYER2]->rectCollided(objects[i])) 
-				objects[PLAYER2]->bounce(objects[i]);			
+				objects[PLAYER2]->bounce(objects[i]);
 		}	
 
 	if (objects[PLAYER1]->rectCollided(objects[PLAYER2]))
@@ -160,6 +176,7 @@ void Tag::collisions()
 		objects[PLAYER2]->bounce();
 		objects[PLAYER1]->tag();
 		objects[PLAYER2]->tag();
+		audio->playCue(TAG);
 	}	
 	
 }
@@ -234,7 +251,7 @@ void Tag::buildFX()
  
 	ID3D10Blob* compilationErrors = 0;
 	HRESULT hr = 0;
-	hr = D3DX10CreateEffectFromFile(L"source//color.fx", 0, 0, 
+	hr = D3DX10CreateEffectFromFile(L"SuperTagTurbo//source//color.fx", 0, 0, 
 		"fx_4_0", shaderFlags, 0, md3dDevice, 0, 0, &mFX, &compilationErrors, 0);
 	if(FAILED(hr))
 	{

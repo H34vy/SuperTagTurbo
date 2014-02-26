@@ -30,4 +30,12 @@
 #define ZERO		Vector3(0,0,0)
 #define PI			3.14159;
 
+const wchar_t WAVE_BANK[] = L"SuperTagTurbo\\audio\\Win\\WavesExample1.xwb";
+const wchar_t SOUND_BANK[] = L"SuperTagTurbo\\audio\\Win\\SoundsExample1.xsb";
+
+
+const char BG[] = "bg";
+const char HIT[] = "collision";
+const char TAG[] = "tag";
+
 #endif

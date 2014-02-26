@@ -8,13 +8,14 @@
 
 #include "Object.h"
 #include "Input.h"
+#include "audio.h"
 
 enum CollisionType{HOR, VERT};
 
 class Player: public Object
 {
 public:
-	Player(int, Box*, Input*);
+	Player(int, Box*, Input*, Audio*);
 
 	virtual void update(float dt);
 	virtual void tag();	
@@ -25,6 +26,7 @@ public:
 	
 protected:
 	Input* input;
+	Audio* audio;
 	
 	int UP, DOWN, LEFT, RIGHT;
 	CollisionType c;

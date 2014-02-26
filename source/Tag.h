@@ -8,6 +8,7 @@
 #define TAG_H
 
 #include "d3dApp.h"
+#include "audio.h"
 #include "Geometry.h"
 #include "Input.h"
 #include "Object.h"
@@ -88,6 +89,8 @@ private:
 	
 	Matrix mView;
 	Matrix mProj;
+	Audio* audio;
+	HRESULT hr;
 };
 
 #endif

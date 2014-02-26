@@ -8,11 +8,11 @@
 const float JUMP_SPEED(26.f);
 const float GRAVITY(75.f);
 
-Player::Player(int controlScheme, Box* t, Input* in)
+Player::Player(int controlScheme, Box* t, Input* in, Audio* aud)
 {
 	tagger = t;
 	input = in;
-
+	audio = aud;
 	switch(controlScheme)
 	{
 	case 0: UP = 'W'; DOWN = 'S'; LEFT = 'A'; RIGHT = 'D'; break;
@@ -30,8 +30,10 @@ void Player::update(float dt)
 	float xChange = 0, yChange = 0;	
 
 	//Jump
-	if (input->isKeyDown(UP) && onPlatform) jumpLeft = 2;
-
+	if (input->isKeyDown(UP) && onPlatform) {
+		jumpLeft = 2;
+		audio->playCue(HIT);
+	}
 	//Lateral movement
 	if (input->isKeyDown(LEFT)) xChange += -75;	
 	if (input->isKeyDown(RIGHT)) xChange += 75;
