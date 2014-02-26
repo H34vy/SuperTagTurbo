@@ -110,8 +110,8 @@ void Tag::initApp()
 	menu_Title = "SuperTagTurbo!\n"+tagger+" is \"It!\"\nPress any key to begin";
 	game_Seconds = 60;
 	game_Minutes = (game_Seconds/60);
-	player1_Score = 0;
-	player2_Score = 0;
+	player1_Score = 60;
+	player2_Score = 60;
 	last_frame_Time = 0;
 	current_frame_Time = 0;
 	P1wins = 0;
@@ -140,10 +140,10 @@ void Tag::updateScene(float dt)
 		collisions();	
 
 		if(objects[PLAYER1]->get_Tagger()){
-			player1_Score += current_frame_Time - last_frame_Time; 
+			player1_Score -= current_frame_Time - last_frame_Time; 
 		}
 		else if(objects[PLAYER2]->get_Tagger()){
-			player2_Score += current_frame_Time - last_frame_Time;
+			player2_Score -= current_frame_Time - last_frame_Time;
 		}
 	}
 
@@ -253,8 +253,8 @@ void Tag::reset()
 	gameState = 0;
 	input->clearAll();
 	std::string winner;
-	if (player1_Score < player2_Score){ winner = "White"; P1wins++; }
-	else if (player1_Score > player2_Score){ winner = "Black"; P2wins++; }
+	if (player1_Score > player2_Score){ winner = "White"; P1wins++; }
+	else if (player1_Score < player2_Score){ winner = "Black"; P2wins++; }
 	else winner = "Nobody";
 
 	std::string tagger="";
@@ -266,8 +266,8 @@ void Tag::reset()
 	menu_Title = ss.str();
 	game_Seconds = 60;
 	game_Minutes = (game_Seconds/60);
-	player1_Score = 0;
-	player2_Score = 0;
+	player1_Score = 60;
+	player2_Score = 60;
 	last_frame_Time = 0;
 	current_frame_Time = 0;
 

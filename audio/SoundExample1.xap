@@ -16,8 +16,8 @@ Global Settings
     Header File = C:\Programming 2D Games\Object Version\Chapter 7 Sound\SoundExample1\audio\SoundExample1.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 3118917594;
-    Last Modified High = 30356285;
+    Last Modified Low = 3427242739;
+    Last Modified High = 30356287;
 
     Category
     {
@@ -227,10 +227,10 @@ Wave Bank
     Compression Preset Name = <none>;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 3364832183;
-    PC Bank Last Modified High = 30356285;
-    Bank Last Revised Low = 3339299630;
-    Bank Last Revised High = 30356285;
+    PC Bank Last Modified Low = 3427302745;
+    PC Bank Last Modified High = 30356287;
+    Bank Last Revised Low = 3365396555;
+    Bank Last Revised High = 30356287;
 
     Wave
     {
@@ -282,8 +282,8 @@ Wave Bank
     {
         Name = end;
         File = end.wav;
-        Build Settings Last Modified Low = 878073532;
-        Build Settings Last Modified High = 30356285;
+        Build Settings Last Modified Low = 3365396555;
+        Build Settings Last Modified High = 30356287;
 
         Cache
         {
@@ -292,12 +292,12 @@ Wave Bank
             Sampling Rate = 44100;
             Bits Per Sample = 1;
             Play Region Offset = 44;
-            Play Region Length = 60750;
+            Play Region Length = 425806;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 607946522;
-            Last Modified High = 30356285;
+            Last Modified Low = 2753965418;
+            Last Modified High = 30356287;
         }
     }
 
@@ -332,8 +332,8 @@ Sound Bank
     Windows File = Win\SoundsExample1.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 3365222222;
-    Bank Last Modified High = 30356285;
+    Bank Last Modified Low = 3428252840;
+    Bank Last Modified High = 30356287;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
