@@ -64,7 +64,6 @@ void Player::update(float dt)
 	velocity.x += xChange*dt;
 
 	onPlatform = false;
-	
 	Object::update(dt);
 }
 

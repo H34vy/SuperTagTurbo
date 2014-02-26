@@ -48,10 +48,10 @@ void Tag::initApp()
 	audio->run();
 
 
-	platformBox.init(md3dDevice, 1.0f, BLACK);
+	platformBox.init(md3dDevice, 1.0f, DARKBROWN);
 	player1Box.init(md3dDevice, 1.0f, WHITE);
 	wallBox.init(md3dDevice, 1.0f);
-	player2Box.init(md3dDevice, 1.0f, DARKBROWN);
+	player2Box.init(md3dDevice, 1.0f, BLACK);
 
 	indicator.init(md3dDevice, 0.5f, RED);
 	
@@ -105,8 +105,8 @@ void Tag::initApp()
 
 	gameState = 0;
 	std::string tagger="";
-	if (objects[PLAYER1]->get_Tagger()) tagger = "WHITE";
-	if (objects[PLAYER2]->get_Tagger()) tagger = "BLACK";
+	if (objects[PLAYER1]->get_Tagger()) tagger = "White";
+	if (objects[PLAYER2]->get_Tagger()) tagger = "Black";
 	
 	menu_Title = "SuperTagTurbo!\n"+tagger+" is \"It!\"\nPress any key to begin";
 	game_Seconds = 60;
@@ -234,7 +234,7 @@ void Tag::drawScene()
 		std::string wp2 = p2.str();	
 		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_CENTER, BLACK);
 		mFont->DrawTextA(NULL, wp1.c_str(), -1, &p1_score_Rect, DT_CENTER, WHITE);
-		mFont->DrawTextA(NULL, wp2.c_str(), -1, &p2_score_Rect, DT_CENTER, DARKBROWN);
+		mFont->DrawTextA(NULL, wp2.c_str(), -1, &p2_score_Rect, DT_CENTER, BLACK);
 	}
 
 	last_frame_Time = mTimer.getGameTime();
@@ -246,16 +246,16 @@ void Tag::reset()
 	gameState = 0;
 	input->clearAll();
 	std::string winner;
-	if (player1_Score < player2_Score){ winner = "P1"; P1wins++; }
-	else if (player1_Score > player2_Score){ winner = "P2"; P2wins++; }
+	if (player1_Score < player2_Score){ winner = "White"; P1wins++; }
+	else if (player1_Score > player2_Score){ winner = "Black"; P2wins++; }
 	else winner = "Nobody";
 
 	std::string tagger="";
-	if (objects[PLAYER1]->get_Tagger()) tagger = "BLACK";
-	if (objects[PLAYER2]->get_Tagger()) tagger = "WHITE";
+	if (objects[PLAYER1]->get_Tagger()) tagger = "Black";
+	if (objects[PLAYER2]->get_Tagger()) tagger = "White";
 
 	std::stringstream ss;
-	ss << winner + " wins!\nP1: " << P1wins << "  P2: " << P2wins << "\n" << tagger << " is \"It!\"\nPress any key to begin";
+	ss << winner + " wins!\nWhite: " << P1wins << "  Black: " << P2wins << "\n" << tagger << " is \"It!\"\nPress any key to begin";
 	menu_Title = ss.str();
 	game_Seconds = 60;
 	game_Minutes = (game_Seconds/60);
