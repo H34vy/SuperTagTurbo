@@ -66,6 +66,7 @@ public:
 	float player2_Score;
 	float last_frame_Time;
 	float current_frame_Time;
+	float lastFrameSeconds;
 
 private:
 	void buildFX();

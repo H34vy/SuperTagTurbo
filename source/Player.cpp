@@ -29,10 +29,8 @@ void Player::update(float dt)
 	float xChange = 0, yChange = 0;	
 
 	//Jump
-	if (input->isKeyDown(UP) && onPlatform) {
-		jumpLeft = 2;
-		audio->playCue(HIT);
-	}
+	if (input->isKeyDown(UP) && onPlatform) jumpLeft = 2;		
+	
 	//Lateral movement
 	if (input->isKeyDown(LEFT)) xChange += -65;	
 	if (input->isKeyDown(RIGHT)) xChange += 65;
@@ -125,7 +123,8 @@ void Player::bounce()
 	}
 
 	if (edgeLeft < -15.f) position.x = -15.f + scaleX;
-	if (edgeRight > 15.f) position.x = 15.f - scaleX;	
+	if (edgeRight > 15.f) position.x = 15.f - scaleX;
+
 }
 
 void Player::tag()

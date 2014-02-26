@@ -47,7 +47,6 @@ void Tag::initApp()
     }
 	audio->run();
 
-
 	platformBox.init(md3dDevice, 1.0f, DARKBROWN);
 	player1Box.init(md3dDevice, 1.0f, WHITE);
 	wallBox.init(md3dDevice, 1.0f);
@@ -119,9 +118,7 @@ void Tag::initApp()
 	P2wins = 0;
 
 	buildFX();
-	buildVertexLayouts();
-	
-	audio->playCue(BG);
+	buildVertexLayouts();	
 }
 
 void Tag::updateScene(float dt)
@@ -132,6 +129,7 @@ void Tag::updateScene(float dt)
 		if(input->anyKeyPressed()){
 			gameState = 1;
 			mTimer.reset();
+			audio->playCue(BG);
 		}
 	}
 	else if(gameState == 1){
@@ -225,6 +223,15 @@ void Tag::drawScene()
 			minutes = 0;
 			s << minutes << ":" << seconds%60;
 		}
+
+		Color c = BLACK;
+		if (seconds <= 10)
+		{
+			c = RED;
+			if (lastFrameSeconds != seconds) audio->playCue(TIME);			
+		}
+		lastFrameSeconds = seconds;
+
 		if(objects[PLAYER1]->get_Tagger()){ p1 << "\"It\"\n"; p2 << '\n';}
 		else{ p2 << "\"It\"\n"; p1 << '\n'; }
 		p1 << floor(player1_Score);
@@ -232,7 +239,7 @@ void Tag::drawScene()
 		std::string ws = s.str();
 		std::string wp1 = p1.str();
 		std::string wp2 = p2.str();	
-		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_CENTER, BLACK);
+		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_CENTER, c);
 		mFont->DrawTextA(NULL, wp1.c_str(), -1, &p1_score_Rect, DT_CENTER, WHITE);
 		mFont->DrawTextA(NULL, wp2.c_str(), -1, &p2_score_Rect, DT_CENTER, BLACK);
 	}
@@ -251,8 +258,8 @@ void Tag::reset()
 	else winner = "Nobody";
 
 	std::string tagger="";
-	if (objects[PLAYER1]->get_Tagger()) tagger = "Black";
-	if (objects[PLAYER2]->get_Tagger()) tagger = "White";
+	if (objects[PLAYER1]->get_Tagger()) tagger = "White";
+	if (objects[PLAYER2]->get_Tagger()) tagger = "Black";
 
 	std::stringstream ss;
 	ss << winner + " wins!\nWhite: " << P1wins << "  Black: " << P2wins << "\n" << tagger << " is \"It!\"\nPress any key to begin";
@@ -267,6 +274,8 @@ void Tag::reset()
 	objects[PLAYER1]->setPosition(Vector3(-13,0,Z));
 	objects[PLAYER2]->setPosition(Vector3(13,0,Z));
 
+	audio->stopCue(BG);
+	audio->playCue(END);
 }
 
 //Don't touch these!

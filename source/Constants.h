@@ -35,7 +35,8 @@ const wchar_t SOUND_BANK[] = L"SuperTagTurbo\\audio\\Win\\SoundsExample1.xsb";
 
 
 const char BG[] = "bg";
-const char HIT[] = "collision";
+const char TIME[] = "lowTime";
 const char TAG[] = "tag";
+const char END[] = "end";
 
 #endif
