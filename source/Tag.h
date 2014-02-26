@@ -15,6 +15,8 @@
 #include "Player.h"
 #include "Indicator.h"
 
+const int Z = -1;
+
 //Object indicies 
 enum
 {
@@ -31,13 +33,11 @@ enum
 	PLAYER1,
 	PLAYER2,	
 
-	INDICATOR_PLAYER1,
-	INDICATOR_PLAYER2,
+	INDICATOR,
 
 	BACK_WALL,
 	LEFT_WALL,
 	RIGHT_WALL,
-	//TOP_WALL,
 	BOTTOM_WALL,
 
 	//Accurate if last
@@ -56,7 +56,6 @@ public:
 	void collisions();
 	void drawScene(); 
 	Vector3 moveCube();
-	LRESULT messageHandler( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
 	int gameState;
 	std::string menu_Title;
@@ -71,12 +70,15 @@ public:
 private:
 	void buildFX();
 	void buildVertexLayouts();
+	void reset();
 
 	//Geometries
 	Line lineR, lineW, lineB;
-	Box platformBox, playerBox, taggerBox;
+	Box platformBox, player1Box, player2Box;
 	RainbowBox wallBox;
-	Pyramid indicatorPlayer1, indicatorPlayer2;
+	Pyramid indicator;
+
+	int P1wins, P2wins;
 
 	//Array of objects	
 	Object* objects[OBJECT_COUNT];	

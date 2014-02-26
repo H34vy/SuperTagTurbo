@@ -8,9 +8,8 @@
 const float JUMP_SPEED(26.f);
 const float GRAVITY(75.f);
 
-Player::Player(int controlScheme, Box* t, Input* in, Audio* aud)
+Player::Player(int controlScheme, Input* in, Audio* aud)
 {
-	tagger = t;
 	input = in;
 	audio = aud;
 	switch(controlScheme)
@@ -35,8 +34,8 @@ void Player::update(float dt)
 		audio->playCue(HIT);
 	}
 	//Lateral movement
-	if (input->isKeyDown(LEFT)) xChange += -75;	
-	if (input->isKeyDown(RIGHT)) xChange += 75;
+	if (input->isKeyDown(LEFT)) xChange += -65;	
+	if (input->isKeyDown(RIGHT)) xChange += 65;
 
 	//Increase fall speed
 	//if (input->isKeyDown(DOWN)) yChange += -15;	
@@ -86,7 +85,7 @@ void Player::bounceCalc(Object* o)
 
 void Player::bounce()
 {
-	float error = .6;
+	float error = .06;
 
 	//Player on Object
 	if (abs(edgeBot - oEdgeTop) < error)
@@ -132,10 +131,6 @@ void Player::bounce()
 
 void Player::tag()
 {
-	Box* temp = (Box*)geo;
-	geo = tagger;
-	tagger = temp;	
-
 	isTagger = !isTagger;
 }
 

@@ -34,16 +34,6 @@ void Tag::initApp()
 {
 	D3DApp::initApp();
 	
-	gameState = 0;
-
-	menu_Title = "SuperTagTurbo!\nWhite is \"It!\"\nPress any key to begin";
-	game_Seconds = 60;
-	game_Minutes = (game_Seconds/60);
-	player1_Score = 0;
-	player2_Score = 0;
-	last_frame_Time = 0;
-	current_frame_Time = 0;
-
 	audio = new Audio();
 	if (*WAVE_BANK != '\0' && *SOUND_BANK != '\0')  // if sound files defined
     {
@@ -59,13 +49,12 @@ void Tag::initApp()
 
 
 	platformBox.init(md3dDevice, 1.0f, BLACK);
-	playerBox.init(md3dDevice, 1.0f, DARKBROWN);
+	player1Box.init(md3dDevice, 1.0f, WHITE);
 	wallBox.init(md3dDevice, 1.0f);
-	taggerBox.init(md3dDevice, 1.0f, WHITE);
+	player2Box.init(md3dDevice, 1.0f, DARKBROWN);
 
-	indicatorPlayer1.init(md3dDevice, 0.5f, RED);
-	indicatorPlayer2.init(md3dDevice, 0.5f, BLUE);
-
+	indicator.init(md3dDevice, 0.5f, RED);
+	
 	for (int i=0; i<OBJECT_COUNT; i++) objects[i] = new Object();
 
 	/*objects[X_AXIS]->init(&lineR, Vector3(-10,0,0), &mView, &mProj, 5);
@@ -76,8 +65,6 @@ void Tag::initApp()
 
 	objects[Y_AXIS]->setRotation(0,0, ToRadian(90));
 	objects[Z_AXIS]->setRotation(0, ToRadian(90), 0);*/
-
-	const int Z = -1;
 
 	objects[BOT_LEFT_PLATFORM]->setScale(4,.25,1);
 	objects[BOT_RIGHT_PLATFORM]->setScale(4,.25,1);
@@ -90,8 +77,7 @@ void Tag::initApp()
 	objects[TOP_LEFT_PLATFORM]->init(&platformBox, Vector3(-10, 12, Z), &mView, &mProj, .7071);
 	objects[TOP_RIGHT_PLATFORM]->init(&platformBox, Vector3(10, 12, Z), &mView, &mProj, .7071);
 	objects[MIDDLE_PLATFORM]->init(&platformBox, Vector3(0, 6.5, Z), &mView, &mProj, .7071);
-
-
+	
 	objects[BACK_WALL]->setScale(16,25, 1);
 	objects[LEFT_WALL]->setScale(1,25, -2*Z);
 	objects[RIGHT_WALL]->setScale(1,25, -2*Z);	
@@ -103,22 +89,34 @@ void Tag::initApp()
 	objects[BOTTOM_WALL]->setScale(15,1, -2*Z);
 	objects[BOTTOM_WALL]->init(&wallBox, Vector3(0,-4,Z), &mView, &mProj, .7071);
 	
-	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, &taggerBox, input, audio);
-	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, &taggerBox, input, audio);
+	delete objects[PLAYER1]; objects[PLAYER1] = new Player(0, input, audio);
+	delete objects[PLAYER2]; objects[PLAYER2] = new Player(1, input, audio);
 
-	objects[PLAYER1]->init(&playerBox, Vector3(-13,0,Z), &mView, &mProj, .7071);
-	objects[PLAYER2]->init(&playerBox, Vector3(13,0, Z), &mView, &mProj, .7071);
+	objects[PLAYER1]->init(&player1Box, Vector3(-13,0,Z), &mView, &mProj, .7071);
+	objects[PLAYER2]->init(&player2Box, Vector3(13,0, Z), &mView, &mProj, .7071);
 	
-	delete objects[INDICATOR_PLAYER1]; objects[INDICATOR_PLAYER1] = new Indicator(0, &indicatorPlayer1, input, objects[PLAYER1]);
-	delete objects[INDICATOR_PLAYER2]; objects[INDICATOR_PLAYER2] = new Indicator(0, &indicatorPlayer2, input, objects[PLAYER2]);
-
-	objects[INDICATOR_PLAYER1]->init(&indicatorPlayer1, Vector3(-13,3,Z), &mView, &mProj, .7071);
-	objects[INDICATOR_PLAYER2]->init(&indicatorPlayer2, Vector3(13,3,Z), &mView, &mProj, .7071);
-
+	delete objects[INDICATOR]; objects[INDICATOR] = new Indicator(&indicator, objects[PLAYER1], objects[PLAYER2]);	
+	objects[INDICATOR]->init(&indicator, Vector3(100,100,100), &mView, &mProj, .7071);
+	
 	if (rGen.next()) objects[PLAYER1]->tag();
 	else objects[PLAYER2]->tag();
 
 	objects[BACK_WALL]->setCollidable(false);
+
+	gameState = 0;
+	std::string tagger="";
+	if (objects[PLAYER1]->get_Tagger()) tagger = "WHITE";
+	if (objects[PLAYER2]->get_Tagger()) tagger = "BLACK";
+	
+	menu_Title = "SuperTagTurbo!\n"+tagger+" is \"It!\"\nPress any key to begin";
+	game_Seconds = 60;
+	game_Minutes = (game_Seconds/60);
+	player1_Score = 0;
+	player2_Score = 0;
+	last_frame_Time = 0;
+	current_frame_Time = 0;
+	P1wins = 0;
+	P2wins = 0;
 
 	buildFX();
 	buildVertexLayouts();
@@ -137,9 +135,12 @@ void Tag::updateScene(float dt)
 		}
 	}
 	else if(gameState == 1){
+		if (current_frame_Time >= 60) reset();
+				
 		D3DApp::updateScene(dt);
 		for (int i=0; i<OBJECT_COUNT; i++) objects[i]->update(dt);	
 		collisions();	
+
 		if(objects[PLAYER1]->get_Tagger()){
 			player1_Score += current_frame_Time - last_frame_Time; 
 		}
@@ -226,22 +227,47 @@ void Tag::drawScene()
 		}
 		if(objects[PLAYER1]->get_Tagger()){ p1 << "\"It\"\n"; p2 << '\n';}
 		else{ p2 << "\"It\"\n"; p1 << '\n'; }
-		p1 << "P1\n" << floor(player1_Score);
-		p2 << "P2\n" << floor(player2_Score);
+		p1 << floor(player1_Score);
+		p2 << floor(player2_Score);
 		std::string ws = s.str();
 		std::string wp1 = p1.str();
 		std::string wp2 = p2.str();	
 		mFont->DrawTextA(NULL, ws.c_str(), -1, &title, DT_CENTER, BLACK);
-		mFont->DrawTextA(NULL, wp1.c_str(), -1, &p1_score_Rect, DT_CENTER, RED);
-		mFont->DrawTextA(NULL, wp2.c_str(), -1, &p2_score_Rect, DT_CENTER, BLUE);
+		mFont->DrawTextA(NULL, wp1.c_str(), -1, &p1_score_Rect, DT_CENTER, WHITE);
+		mFont->DrawTextA(NULL, wp2.c_str(), -1, &p2_score_Rect, DT_CENTER, DARKBROWN);
 	}
 
 	last_frame_Time = mTimer.getGameTime();
-	
-
 	mSwapChain->Present(0, 0);
 }
 
+void Tag::reset()
+{
+	gameState = 0;
+	input->clearAll();
+	std::string winner;
+	if (player1_Score < player2_Score){ winner = "P1"; P1wins++; }
+	else if (player1_Score > player2_Score){ winner = "P2"; P2wins++; }
+	else winner = "Nobody";
+
+	std::string tagger="";
+	if (objects[PLAYER1]->get_Tagger()) tagger = "BLACK";
+	if (objects[PLAYER2]->get_Tagger()) tagger = "WHITE";
+
+	std::stringstream ss;
+	ss << winner + " wins!\nP1: " << P1wins << "  P2: " << P2wins << "\n" << tagger << " is \"It!\"\nPress any key to begin";
+	menu_Title = ss.str();
+	game_Seconds = 60;
+	game_Minutes = (game_Seconds/60);
+	player1_Score = 0;
+	player2_Score = 0;
+	last_frame_Time = 0;
+	current_frame_Time = 0;
+
+	objects[PLAYER1]->setPosition(Vector3(-13,0,Z));
+	objects[PLAYER2]->setPosition(Vector3(13,0,Z));
+
+}
 
 //Don't touch these!
 void Tag::buildFX()

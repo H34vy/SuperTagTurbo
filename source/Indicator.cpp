@@ -5,21 +5,23 @@
 
 #include "Indicator.h"
 
-const Vector3 VELOCITY_MAX(2,15,0);
-
-Indicator::Indicator(int controlScheme, Pyramid* t, Input* in, Object* p)
+Indicator::Indicator(Pyramid* t, Object* p1, Object* p2)
 {
-	player = p;
-	input = in;
 	indicator = t;
-	
+	player1 = p1;
+	player2 = p2;
 }
 
 void Indicator::update(float dt)
-{	
-	position.x = player->getPosition().x;
-	position.y = player->getPosition().y+3;
-	position.z = player->getPosition().z;
+{
+	Object* tagger;
+	active = true;
+	if (player1->get_Tagger()) tagger = player1;
+	else if (player2->get_Tagger()) tagger = player2;
+	else {active = false; return; }
+	position.x = tagger->getPosition().x;
+	position.y = tagger->getPosition().y+3;
+	position.z = tagger->getPosition().z;
 	
 	Object::update(dt);
 }
